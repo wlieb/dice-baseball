@@ -1,0 +1,6 @@
+Change play function to return:
+    text to be displayed
+    runner position
+    score
+
+Change scoreboard function to take play text and properly space with regard to 3 outs, no runner on base, etc...
