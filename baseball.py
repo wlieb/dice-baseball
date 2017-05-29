@@ -28,14 +28,18 @@ RED = pygame.Color(255, 0, 0)
 YELLOW = pygame.Color(255, 255, 0)
 NAVY = pygame.Color(0, 0, 128)
 
+backgroundrect = pygame.Rect(0, 0, 400, 400)
 gamerect = pygame.Rect(10, 10, 380, 380)
-pygame.draw.rect(DISPLAYSURF, WHITE, gamerect)
 
 def get_initial_diamond():
     #draw diamond with bases
     global gamerect
+    global backgroundrect
     global DISPLAYSURF
     
+    pygame.draw.rect(DISPLAYSURF, NAVY, backgroundrect)
+    pygame.draw.rect(DISPLAYSURF, WHITE, gamerect)
+
     pygame.draw.polygon(DISPLAYSURF, BLACK, ((gamerect.centerx, gamerect.centery + 120), (gamerect.centerx + 90, gamerect.centery + 30), (gamerect.centerx, gamerect.centery - 60), (gamerect.centerx - 90, gamerect.centery + 30)), 5)
     pygame.draw.polygon(DISPLAYSURF, WHITE, ((gamerect.centerx - 10, gamerect.centery + 130), (gamerect.centerx - 10, gamerect.centery + 120), (gamerect.centerx, gamerect.centery + 110), (gamerect.centerx + 10, gamerect.centery + 120), (gamerect.centerx + 10, gamerect.centery + 130)))
     pygame.draw.polygon(DISPLAYSURF, WHITE, ((gamerect.centerx + 100, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 40), (gamerect.centerx + 80, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 20)))
@@ -50,27 +54,27 @@ def get_initial_diamond():
 
     #draw the scoreboard
     fontObj = pygame.font.Font('freesansbold.ttf', 18)
-    textSurfaceObj = fontObj.render('Scoreboard', True, BLACK)
-    textSurfaceObj4 = fontObj.render('Top of 1', True, BLACK)
-    textSurfaceObj1 = fontObj.render('Home: 0  /  Away: 0', True, BLACK)
-    textSurfaceObj2 = fontObj.render('Outs: 0', True, BLACK)
-    textSurfaceObj3 = fontObj.render('Balls: 0  /  Strikes: 0', True, BLACK)
-    textRectObj = textSurfaceObj.get_rect()
-    textRectObj.center = (gamerect.left + 110, gamerect.top + 20)
-    textRectObj4 = textSurfaceObj4.get_rect()
-    textRectObj4.center = (gamerect.left + 85, gamerect.top + 40)    
-    textRectObj1 = textSurfaceObj1.get_rect()
-    textRectObj1.center = (gamerect.left + 95, gamerect.top + 60)
-    textRectObj2 = textSurfaceObj2.get_rect()
-    textRectObj2.center = (gamerect.left + 45, gamerect.top + 80)
-    textRectObj3 = textSurfaceObj3.get_rect()
-    textRectObj3.center = (gamerect.left + 101, gamerect.top + 100)
+    #textSurfaceObj = fontObj.render('Scoreboard', True, BLACK)
+    #textSurfaceObj4 = fontObj.render('', True, BLACK)
+    #textSurfaceObj1 = fontObj.render('Home:    /  Away:  ', True, BLACK)
+    #textSurfaceObj2 = fontObj.render('Outs:  ', True, BLACK)
+    #textSurfaceObj3 = fontObj.render('Balls:    /  Strikes:  ', True, BLACK)
+    #textRectObj = textSurfaceObj.get_rect()
+    #textRectObj.center = (gamerect.left + 110, gamerect.top + 20)
+    #textRectObj4 = textSurfaceObj4.get_rect()
+    #textRectObj4.center = (gamerect.left + 85, gamerect.top + 40)    
+    #textRectObj1 = textSurfaceObj1.get_rect()
+    #textRectObj1.center = (gamerect.left + 95, gamerect.top + 60)
+    #textRectObj2 = textSurfaceObj2.get_rect()
+    #textRectObj2.center = (gamerect.left + 45, gamerect.top + 80)
+    #textRectObj3 = textSurfaceObj3.get_rect()
+    #textRectObj3.center = (gamerect.left + 101, gamerect.top + 100)
 
-    DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-    DISPLAYSURF.blit(textSurfaceObj4, textRectObj4)
-    DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
-    DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
-    DISPLAYSURF.blit(textSurfaceObj3, textRectObj3)
+    #DISPLAYSURF.blit(textSurfaceObj, textRectObj)
+    #DISPLAYSURF.blit(textSurfaceObj4, textRectObj4)
+    #DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+    #DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+    #DISPLAYSURF.blit(textSurfaceObj3, textRectObj3)
 
 
 def roll(numdice):  #roll the dice
@@ -88,99 +92,428 @@ def roll(numdice):  #roll the dice
 
 
 def play(roll):  #get the resultant play
+    global score #get global variables
+    global batter
+    global runners
+    global balls
+    global strikes
+    global outs
+    global inning
+
     global DISPLAYSURF
+    global gamerect
+    
+    fontObj = pygame.font.Font('freesansbold.ttf', 18)
 
     if roll == 11:
         #print('HOMRERUN!')
+        if runners == 111:
+            score[batter] = score[batter] + 1
+        elif runners == 222:
+            score[batter] = score[batter] + 4
+        elif runners == 212 or runners == 122 or runners == 221:
+            score[batter] = score[batter] + 3
+        else:
+            score[batter] = score[batter] + 2
+        balls = 0
+        strikes = 0
+        runners = 111
+
         textSurfaceObj = fontObj.render('HOMERUN!', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'HR'
+
+        #return 'HR'
+
     elif roll == 12 or roll == 25 or roll == 36 or roll == 45:
         #print('Strike')
         textSurfaceObj = fontObj.render('Strike', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'ST'
+
+        strikes += 1
+
+        #return 'ST'
+
     elif roll == 13:
         #print('Double Play')
+        if runners == 211 or runners == 221 or runners == 212 or runners == 122 or runners == 121 or runners == 112 or runners == 222:
+
         textSurfaceObj = fontObj.render('Double Play', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'DP'
+
+        outs += 2
+        balls = 0
+        strikes = 0
+
+            if runners == 211:
+                runners = 111
+            elif runners == 221:
+                runners = 112
+            elif runners == 212 & outs < 3:
+                runners = 111
+                score[batter] += 1
+            elif runners == 122 & outs < 3:
+                runners = 111
+                score[batter] += 1
+            elif runners == 121:
+                runners = 111
+            elif runners == 112:
+                runners = 111
+            elif runners == 222 & outs < 3:
+                runners = 112
+                score[batter] += 1
+        else:
+            #print('No runners on base, one out only...')
+            textSurfaceObj = fontObj.render('Double Play', True, BLACK)
+            textRectObj = textSurfaceObj.get_rect()
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 40)
+            DISPLAYSURF.blit(textSurfaceObj, textRectObj)
+         
+            textSurfaceObj1 = fontObj.render('No runners on base, one out only...', True, BLACK)
+            textRectObj1 = textSurfaceObj1.get_rect()
+            textRectObj1.center = (gamerect.centerx, gamerect.bottom - 20)
+            DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+
+            outs += 1
+            balls = 0
+            strikes = 0            
+
+        #return 'DP'
+
     elif roll == 14:
         #print('Fly Out')
         textSurfaceObj = fontObj.render('Fly Out', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'FL'
+
+        outs += 1
+        balls = 0
+        strikes = 0
+
+        #return 'FL'
+
     elif roll == 15 or roll == 26 or roll == 34 or roll == 35 or roll == 46:
         #print('Ball')
         textSurfaceObj = fontObj.render('Ball', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'BA'
+
+        balls += 1
+
+        #return 'BA'
+
     elif roll == 16:
         #print('Stolen Base')
         textSurfaceObj = fontObj.render('Stolen Base', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'SB'
+
+        if runners == 111:
+            #print('No runners on base, next roll...')
+            textSurfaceObj1 = fontObj.render('No runners on base, next roll...', True, BLACK)
+            textRectObj1 = textSurfaceObj1.get_rect()
+            textRectObj1.center = (gamerect.centerx, gamerect.bottom - 10)
+            DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+        elif runners == 211:
+            runners = 121
+        elif runners == 121:
+            runners = 112
+        elif runners == 112:
+            #print('No valid base to steal, next roll...')
+            textSurfaceObj1 = fontObj.render('No valid base to steal, next roll...', True, BLACK)
+            textRectObj1 = textSurfaceObj1.get_rect()
+            textRectObj1.center = (gamerect.centerx, gamerect.bottom - 10)
+            DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+        elif runners == 221:
+            runners = 122
+        elif runners == 122:
+           #print('No valid base to steal, next roll...')
+            textSurfaceObj1 = fontObj.render('No valid base to steal, next roll...', True, BLACK)
+            textRectObj1 = textSurfaceObj1.get_rect()
+            textRectObj1.center = (gamerect.centerx, gamerect.bottom - 10)
+            DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+        elif runners == 212:
+            runners = 122
+        elif runners == 222:
+            #print('No valid base to steal, next roll...')
+            textSurfaceObj1 = fontObj.render('No valid base to steal, next roll...', True, BLACK)
+            textRectObj1 = textSurfaceObj1.get_rect()
+            textRectObj1.center = (gamerect.centerx, gamerect.bottom - 10)
+            DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
+
+        #return 'SB'
+
     elif roll == 22:
         #print('Triple')
         textSurfaceObj = fontObj.render('Triple', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'TR'
+
+        if runners == 111:
+            runners = 112
+        elif runners == 211:
+            runners = 112
+            score[batter] += 1
+        elif runners == 121:
+            runners = 112
+            score[batter] += 1
+        elif runners == 112:
+            score[batter] += 1
+        elif runners == 221:
+            runners = 112
+            score[batter] += 2
+        elif runners == 122:
+            runners = 112
+            score[batter] += 2
+        elif runners == 212:
+            runners = 112
+            score[batter] += 2
+        elif runners == 222:
+            runners = 112
+            score[batter] += 3
+        balls = 0
+        strikes = 0
+
+        #return 'TR'
+
     elif roll == 23 or roll == 56:
         #print('Groud Out')
         textSurfaceObj = fontObj.render('Ground Out', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'GO'
+
+        outs += 1
+        balls = 0
+        strikes = 0
+
+        #return 'GO'
+
     elif roll == 24:
         #print('Foul Out')
         textSurfaceObj = fontObj.render('Foul Out', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'FO'
+
+        outs += 1
+        balls = 0
+        strikes = 0
+        
+        #return 'FO'
+
     elif roll == 33:
         #print('Double')
         textSurfaceObj = fontObj.render('Double', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'DB'
+
+        if runners == 111:
+            runners = 121
+        elif runners == 211:
+            runners = 122
+        elif runners == 121:
+            score[batter] += 1
+        elif runners == 112:
+            runners = 121
+            score[batter] += 1
+        elif runners == 221:
+            runners = 122
+            score[batter] += 1
+        elif runners == 122:
+            runners = 121
+            score[batter] += 2
+        elif runners == 212:
+            runners = 122
+            score[batter] += 1
+        elif runners == 222:
+            runners = 122
+            score[batter] += 2
+            s
+        balls = 0
+        strikes = 0
+
+        #return 'DB'
+
     elif roll == 44:
         #print('Single')
         textSurfaceObj = fontObj.render('Single', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'SI'
+
+        if runners == 111:
+            runners = 211
+        elif runners == 211:
+            runners = 221
+        elif runners == 121:
+            runners = 212
+        elif runners == 112:
+            runners = 211
+            score[batter] += 1
+        elif runners == 221:
+            runners = 111
+        elif runners == 122:
+            runners = 212
+            score[batter] += 1
+        elif runners == 212:
+            runners = 221
+            score[batter] += 1
+        elif runners == 222:
+            runners = 222
+            score[batter] += 1
+        balls = 0
+        strikes = 0
+
+        #return 'SI'
+
     elif roll == 55:
         #print('Walk')
         textSurfaceObj = fontObj.render('Walk', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'WA'
+
+        if runners == 111:
+            runners = 211
+        elif runners == 211:
+            runners = 221
+        elif runners == 121:
+            runners = 221
+        elif runners == 112:
+            runners = 212
+        elif runners == 221:
+            runners = 222
+        elif runners == 122:
+            runners = 222
+        elif runners == 212:
+            runners = 222
+        elif runners == 222:
+            runners = 222
+            score[batter] += 1
+
+        balls = 0
+        strikes = 0
+
+        #return 'WA'
+
     elif roll == 66:
         #print('Base on Error')
         textSurfaceObj = fontObj.render('Base on Error', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 30)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-        return 'ER'
+
+        if runners == 111:
+            runners = 211
+        elif runners == 211:
+            runners = 221
+        elif runners == 121:
+            runners = 212
+        elif runners == 112:
+            runners = 211
+            score[batter] += 1
+        elif runners == 221:
+            runners = 222
+        elif runners == 122:
+            runners = 212
+            score[batter] += 1
+        elif runners == 212:
+            runners = 221
+            score[batter] += 1
+        elif runners == 222:
+            runners = 222
+            score[batter] += 1
+        balls = 0
+        strikes = 0
+
+        #return 'ER'
+
+        if strikes >= 3:
+            #print('Strike 3! You\'re Out!')
+            textSurfaceObj2 = fontObj.render('Strike 3! You\'re Out!', True, BLACK)
+            textRectObj2 = textSurfaceObj2.get_rect()
+            textRectObj2.center = (gamerect.centerx, gamerect.bottom - 50)
+            DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+            outs += 1
+            strikes = 0
+            balls = 0
+
+    if balls >= 4:
+            #print('Ball 4, take your base...')
+            textSurfaceObj2 = fontObj.render('Ball 4, take your base...', True, BLACK)
+            textRectObj2 = textSurfaceObj2.get_rect()
+            textRectObj2.center = (gamerect.centerx, gamerect.bottom - 50)
+            DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+            if runners == 111:
+                runners = 211
+            elif runners == 211:
+                runners = 221
+            elif runners == 121:
+                runners = 221
+            elif runners == 112:
+                runners = 212
+            elif runners == 221:
+                runners = 222
+            elif runners == 122:
+                runners = 222
+            elif runners == 212:
+                runners = 222
+            elif runners == 222:
+                runners = 222
+                score[batter] += 1
+            balls = 0
+            strikes = 0
+
+    if outs >= 3:
+        if inning == 9:
+            if batter == 1:
+                if score[0] > score[1]:
+                    #print('Game Over!')
+                    #print('Home: ' + str(score[0]) + '  /  Away: ' + str(score[1]))
+                    #print('Home Team Wins!')
+                    #quit();
+                    textSurfaceObj2 = fontObj.render('Game Over', True, BLACK)
+                    textRectObj2 = textSurfaceObj2.get_rect()
+                    textRectObj2.center = (gamerect.centerx, gamerect.bottom)
+                    DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+            elif batter == 0:
+                if score[1] > score[0]:
+                    #print('Game Over!')
+                    #print('Home: ' + str(score[0]) + '  /  Away: ' + str(score[1]))
+                    #print('Away Team Wins!')
+                    #quit();
+                    textSurfaceObj2 = fontObj.render('Game Over', True, BLACK)
+                    textRectObj2 = textSurfaceObj2.get_rect()
+                    textRectObj2.center = (gamerect.centerx, gamerect.bottom)
+                    DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+
+        #print('3 Outs, change sides...')
+        textSurfaceObj2 = fontObj.render('3 Outs, Change Sides', True, BLACK)
+        textRectObj2 = textSurfaceObj2.get_rect()
+        textRectObj2.center = (gamerect.centerx, gamerect.bottom)
+        DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
+
+        if batter == 1:
+            batter -= 1
+        else:
+            batter += 1
+            inning += 1
+                
+        outs = 0
+        balls = 0
+        strikes = 0
+        runners = 111
 
 
 def move(roll):
@@ -191,7 +524,11 @@ def move(roll):
     global strikes
     global outs
     global inning
+
     global DISPLAYSURF
+    global gamerect
+
+    fontObj = pygame.font.Font('freesansbold.ttf', 18)
     
     #determine runner movement, scoring, and outs
     if roll == 'HR':
@@ -233,7 +570,7 @@ def move(roll):
             #print('No runners on base, one out only...')
             textSurfaceObj = fontObj.render('No runners on base, one out only...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
             outs -= 1
         
@@ -249,7 +586,7 @@ def move(roll):
             #print('No runners on base, next roll...')
             textSurfaceObj = fontObj.render('No runners on base, next roll...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
         elif runners == 211:
             runners = 121
@@ -259,7 +596,7 @@ def move(roll):
             #print('No valid base to steal, next roll...')
             textSurfaceObj = fontObj.render('No valid base to steal, next roll...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
         elif runners == 221:
             runners = 122
@@ -267,7 +604,7 @@ def move(roll):
            #print('No valid base to steal, next roll...')
             textSurfaceObj = fontObj.render('No valid base to steal, next roll...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
         elif runners == 212:
             runners = 122
@@ -275,7 +612,7 @@ def move(roll):
             #print('No valid base to steal, next roll...')
             textSurfaceObj = fontObj.render('No valid base to steal, next roll...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
     elif roll == 'TR':
         if runners == 111:
@@ -405,7 +742,7 @@ def move(roll):
             #print('Strike 3! You\'re Out!')
             textSurfaceObj = fontObj.render('Strike 3! You\'re Out!', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
             outs += 1
             strikes = 0
@@ -415,7 +752,7 @@ def move(roll):
             #print('Ball 4, take your base...')
             textSurfaceObj = fontObj.render('Ball 4, take your base...', True, BLACK)
             textRectObj = textSurfaceObj.get_rect()
-            textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+            textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
             DISPLAYSURF.blit(textSurfaceObj, textRectObj)
             if runners == 111:
                 runners = 211
@@ -447,7 +784,7 @@ def move(roll):
                     #quit();
                     textSurfaceObj = fontObj.render('Game Over', True, BLACK)
                     textRectObj = textSurfaceObj.get_rect()
-                    textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+                    textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
                     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
             elif batter == 0:
                 if score[1] > score[0]:
@@ -457,13 +794,13 @@ def move(roll):
                     #quit();
                     textSurfaceObj = fontObj.render('Game Over', True, BLACK)
                     textRectObj = textSurfaceObj.get_rect()
-                    textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+                    textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
                     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
         #print('3 Outs, change sides...')
         textSurfaceObj = fontObj.render('3 Outs, Change Sides', True, BLACK)
         textRectObj = textSurfaceObj.get_rect()
-        textRectObj.center = (gamerect.centerx, gamerect.bottom - 10)
+        textRectObj.center = (gamerect.centerx, gamerect.bottom - 50)
         DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
         if batter == 1:
@@ -497,8 +834,8 @@ def printboard(inn, bat, out, ball, strike, score_home, score_away):
     score_home = str(score_home)
     score_away = str(score_away)
 
-    gamerect = pygame.Rect(10, 10, 380, 380)
-    pygame.draw.rect(DISPLAYSURF, WHITE, gamerect)
+    global gamerect
+    global runners
 
     pygame.draw.polygon(DISPLAYSURF, BLACK, ((gamerect.centerx, gamerect.centery + 120), (gamerect.centerx + 90, gamerect.centery + 30), (gamerect.centerx, gamerect.centery - 60), (gamerect.centerx - 90, gamerect.centery + 30)), 5)
     pygame.draw.polygon(DISPLAYSURF, WHITE, ((gamerect.centerx - 10, gamerect.centery + 130), (gamerect.centerx - 10, gamerect.centery + 120), (gamerect.centerx, gamerect.centery + 110), (gamerect.centerx + 10, gamerect.centery + 120), (gamerect.centerx + 10, gamerect.centery + 130)))
@@ -515,6 +852,7 @@ def printboard(inn, bat, out, ball, strike, score_home, score_away):
 
     #draw the scoreboard
     fontObj = pygame.font.Font('freesansbold.ttf', 18)
+
     textSurfaceObj = fontObj.render('Scoreboard', True, BLACK)
     if bat == 1:
         textSurfaceObj4 = fontObj.render('Top of ' + inn, True, BLACK)
@@ -522,24 +860,32 @@ def printboard(inn, bat, out, ball, strike, score_home, score_away):
         textSurfaceObj4 = fontObj.render('Bottom of ' + inn, True, BLACK)
 
     textSurfaceObj1 = fontObj.render('Home: ' + score_home + '  /  Away: ' + score_away, True, BLACK)
+
     textSurfaceObj2 = fontObj.render('Outs: ' + out, True, BLACK)
+    
     textSurfaceObj3 = fontObj.render('Balls: ' + ball + '  /  Strikes: ' + strike, True, BLACK)
+    
     textRectObj = textSurfaceObj.get_rect()
     textRectObj.center = (gamerect.left + 110, gamerect.top + 20)
-    textRectObj4 = textSurfaceObj4.get_rect()
-    textRectObj4.center = (gamerect.left + 85, gamerect.top + 40)    
+    
     textRectObj1 = textSurfaceObj1.get_rect()
     textRectObj1.center = (gamerect.left + 95, gamerect.top + 60)
+    
     textRectObj2 = textSurfaceObj2.get_rect()
     textRectObj2.center = (gamerect.left + 45, gamerect.top + 80)
+    
     textRectObj3 = textSurfaceObj3.get_rect()
     textRectObj3.center = (gamerect.left + 101, gamerect.top + 100)
 
+    textRectObj4 = textSurfaceObj4.get_rect()
+    textRectObj4.center = (gamerect.left + 85, gamerect.top + 40)
+
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
-    DISPLAYSURF.blit(textSurfaceObj4, textRectObj4)
     DISPLAYSURF.blit(textSurfaceObj1, textRectObj1)
     DISPLAYSURF.blit(textSurfaceObj2, textRectObj2)
     DISPLAYSURF.blit(textSurfaceObj3, textRectObj3)
+    DISPLAYSURF.blit(textSurfaceObj4, textRectObj4)
+    
 
     if runners == 121 or runners == 122 or runners == 222 or runners ==221:
         pygame.draw.polygon(DISPLAYSURF, BLACK, ((gamerect.centerx, gamerect.centery - 70), (gamerect.centerx - 10, gamerect.centery - 60), (gamerect.centerx, gamerect.centery - 50), (gamerect.centerx + 10, gamerect.centery - 60)))
@@ -565,8 +911,8 @@ def printboard(inn, bat, out, ball, strike, score_home, score_away):
         
     #    print('       X     O     ')
     elif runners == 212 or runners == 222:
-        pygame.draw.polygon(DISPLAYSURF, WHITE, ((gamerect.centerx + 100, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 40), (gamerect.centerx + 80, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 20)))
-        pygame.draw.polygon(DISPLAYSURF, WHITE, ((gamerect.centerx - 100, gamerect.centery + 30), (gamerect.centerx - 90, gamerect.centery + 40), (gamerect.centerx - 80, gamerect.centery + 30), (gamerect.centerx - 90, gamerect.centery + 20)))
+        pygame.draw.polygon(DISPLAYSURF, BLACK, ((gamerect.centerx + 100, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 40), (gamerect.centerx + 80, gamerect.centery + 30), (gamerect.centerx + 90, gamerect.centery + 20)))
+        pygame.draw.polygon(DISPLAYSURF, BLACK, ((gamerect.centerx - 100, gamerect.centery + 30), (gamerect.centerx - 90, gamerect.centery + 40), (gamerect.centerx - 80, gamerect.centery + 30), (gamerect.centerx - 90, gamerect.centery + 20)))
         
     #    print('       X     X     ')
     #print('        \\   /      ')
@@ -582,6 +928,7 @@ ra = ''
 #    move(c)
 #    printboard()
 get_initial_diamond()
+printboard(inning, batter, outs, balls, strikes, score[0], score[1])
 
 while True:
     for event in pygame.event.get():
@@ -589,6 +936,7 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == KEYUP and event.key == K_RETURN:
+            get_initial_diamond()
             move(play(roll(dice)))
             printboard(inning, batter, outs, balls, strikes, score[0], score[1])
     pygame.display.update() 
